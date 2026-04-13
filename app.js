@@ -12,20 +12,26 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: [
-            "http://localhost:8080", 
-            "http://localhost:3000",
-            "http://127.0.0.1:8080",
-            "http://127.0.0.1:3000",
-            "http://localhost", 
-            "https://leads-whatsapp-crm.vercel.app"
-        ],
+        origin: ["https://whatsapp.tezikaro.com", "http://localhost:3000", "http://localhost:8080"],
         methods: ["GET", "POST"],
         credentials: true
-    }
+    },
+    allowEIO3: true
 });
 
-app.use(cors());
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        const allowed = ["https://whatsapp.tezikaro.com", "http://localhost:3000", "http://localhost:8080"];
+        if (allowed.indexOf(origin) !== -1 || origin.includes('railway.app')) {
+            callback(null, true);
+        } else {
+            console.log("[CORS] Blocked origin:", origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 app.use(express.json());
 
 // Set socket for session manager
