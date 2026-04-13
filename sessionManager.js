@@ -48,10 +48,22 @@ class SessionManager {
     }
 
     async initSession(tenantId, sessionId) {
+        // Prevent multiple simultaneous initializations for the same session
         if (this.sessions.has(sessionId)) {
+            console.log(`[Manager] Session ${sessionId} already exists. Skipping init or re-establishing listeners.`);
             const existingSock = this.sessions.get(sessionId);
-            try { existingSock.ev.removeAllListeners(); } catch(e) {}
-            this.sessions.delete(sessionId);
+            // If already connected, just notify the specific client
+            if (this.socket) {
+                this.socket.to(sessionId).emit('status', { sessionId, status: 'connected' });
+            }
+            return;
+        }
+
+        console.log(`[Manager] Initializing session: ${sessionId} for tenant: ${tenantId}`);
+        
+        // Notify any subscribed clients that we are starting
+        if (this.socket) {
+            this.socket.emit('status', { sessionId, status: 'initializing' });
         }
 
         const sessionDir = path.join(SESSIONS_PATH, `tenant_${tenantId}_${sessionId}`);
