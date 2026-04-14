@@ -236,7 +236,7 @@ class SessionManager {
 
         console.log(`[LEAD] from=${from} | name=${name} | jid=${jid}`);
 
-        const callbackUrl = process.env.PHP_CALLBACK_URL || 'http://localhost:8080';
+        const callbackUrl = process.env.PHP_CALLBACK_URL || 'https://whatsapp.tezikaro.com';
         // Send to PHP via webhook
         try {
             const axios = (await import('axios')).default;

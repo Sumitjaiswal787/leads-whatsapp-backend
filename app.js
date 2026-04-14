@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 
 // Diagnostic endpoint to test connectivity to Hostinger
 app.get('/test-callback', async (req, res) => {
-    const callbackUrl = process.env.PHP_CALLBACK_URL || 'http://localhost:8080';
+    const callbackUrl = process.env.PHP_CALLBACK_URL || 'https://whatsapp.tezikaro.com';
     try {
         const axios = (await import('axios')).default;
         console.log(`[Test] Attempting to reach: ${callbackUrl}/api/callback.php`);
