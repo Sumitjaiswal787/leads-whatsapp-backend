@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import sessionManager from './sessionManager.js';
+import metaHandler from './metaHandler.js';
 
 dotenv.config();
 
@@ -39,6 +40,10 @@ app.use(express.json());
 
 // Set socket for session manager
 sessionManager.setSocket(io);
+
+// Meta Webhook Routes
+app.get('/webhooks/meta', (req, res) => metaHandler.verifyWebhook(req, res));
+app.post('/webhooks/meta', (req, res) => metaHandler.handleWebhook(req, res));
 
 // API Routes
 app.get('/', (req, res) => {
